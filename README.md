@@ -1,0 +1,1 @@
+# Class-10-icse-physics-MCQ-
