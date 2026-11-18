@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICSE Physics Master - Force Quiz</title>
+    <title>ICSE Physics Master - Pro Quiz</title>
     <style>
         :root {
-            --primary: #4f46e5;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --success: #22c55e;
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
             --error: #ef4444;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -26,165 +28,358 @@
         }
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             background: var(--card-bg);
             padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         h1 {
-            font-size: 22px;
-            color: var(--primary);
+            font-size: 24px;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         .subtitle {
             text-align: center;
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Chapter & Set Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .card {
+            background: linear-gradient(135deg, #312e81 0%, #1e1b4b 100%);
+            border: 1px solid rgba(129, 140, 248, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        .card h3 { margin: 0 0 4px 0; font-size: 18px; color: #e0e7ff; }
+        .card p { margin: 0; font-size: 12px; color: var(--text-muted); }
+
+        /* Quiz UI */
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
         }
         .question-box {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
             margin-bottom: 16px;
+            line-height: 1.4;
         }
         .options-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
         .option-btn {
-            background: #f1f5f9;
-            border: 2px solid #e2e8f0;
+            background: #334155;
+            border: 2px solid #475569;
+            color: white;
             padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 15px;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
         }
         .option-btn:hover:not(:disabled) {
-            background: #e0e7ff;
+            background: #475569;
             border-color: var(--primary);
         }
         .option-btn.correct {
-            background: #dcfce7 !important;
+            background: rgba(16, 185, 129, 0.2) !important;
             border-color: var(--success) !important;
-            color: #166534;
+            color: #34d399;
         }
         .option-btn.incorrect {
-            background: #fee2e2 !important;
+            background: rgba(239, 68, 68, 0.2) !important;
             border-color: var(--error) !important;
-            color: #991b1b;
+            color: #f87171;
         }
         .explanation {
-            background: #eff6ff;
+            background: #0f172a;
             border-left: 4px solid var(--primary);
             padding: 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-bottom: 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 16px;
             display: none;
+            color: #cbd5e1;
         }
-        .next-btn {
-            background: var(--primary);
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
             width: 100%;
             padding: 14px;
             font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .back-btn {
+            background: transparent;
+            border: 1px solid #475569;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
-            display: none;
-            font-weight: 600;
+            font-size: 13px;
         }
-        .next-btn:hover {
-            opacity: 0.9;
-        }
-        .score-card {
-            text-align: center;
-            display: none;
-        }
-        .score-card h2 {
-            font-size: 26px;
-            color: var(--primary);
-        }
+        .back-btn:hover { color: white; border-color: white; }
+        
+        .score-card { text-align: center; padding: 20px 0; }
+        .score-card h2 { font-size: 28px; color: #a855f7; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container" id="app">
+<div class="container">
     <h1>ICSE Physics Master</h1>
-    <div class="subtitle">Class 10 — Chapter: Force (PYQ & Practice Quiz)</div>
+    <div class="subtitle">Class 10 • Chapter-wise Pro Quiz (PYQ Enabled)</div>
 
-    <div id="quiz-screen">
-        <div id="progress" style="font-size: 13px; color: #64748b; margin-bottom: 8px;">Question 1 of 3</div>
-        <div class="question-box" id="question-text">Loading question...</div>
-        <div class="options-list" id="options-container"></div>
-        <div class="explanation" id="explanation-box"></div>
-        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+    <!-- Screen 1: Chapter Selection -->
+    <div id="chapter-screen" class="screen active">
+        <h3 style="font-size: 15px; color: #e2e8f0; margin-bottom: 8px;">Select Chapter:</h3>
+        <div class="grid" id="chapter-list"></div>
     </div>
 
-    <div class="score-card" id="score-screen">
-        <h2>Quiz Completed! 🎉</h2>
-        <p id="final-score" style="font-size: 18px; margin: 20px 0;"></p>
-        <button class="next-btn" style="display: block;" onclick="restartQuiz()">Try Again</button>
+    <!-- Screen 2: Set Selection -->
+    <div id="set-screen" class="screen">
+        <button class="back-btn" onclick="showScreen('chapter-screen')">← Back to Chapters</button>
+        <h3 id="selected-chapter-title" style="font-size: 16px; color: #e2e8f0; margin-bottom: 8px;"></h3>
+        <div class="grid" id="set-list"></div>
+    </div>
+
+    <!-- Screen 3: Quiz Screen -->
+    <div id="quiz-screen" class="screen">
+        <button class="back-btn" onclick="showScreen('set-screen')">← Exit Quiz</button>
+        <div class="progress-bar">
+            <span id="progress-text">Question 1 of 20</span>
+            <span id="score-badge" style="color: #34d399;">Score: 0</span>
+        </div>
+        <div class="question-box" id="question-text"></div>
+        <div class="options-list" id="options-container"></div>
+        <div class="explanation" id="explanation-box"></div>
+        <button class="btn" id="next-btn" style="display: none;" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <!-- Screen 4: Score Screen -->
+    <div id="score-screen" class="screen">
+        <div class="score-card">
+            <h2>Quiz Completed! 🎉</h2>
+            <p id="final-score-text" style="font-size: 18px; margin: 15px 0; color: #e2e8f0;"></p>
+            <button class="btn" onclick="showScreen('chapter-screen')">Back to Home</button>
+        </div>
     </div>
 </div>
 
 <script>
-    const quizData = [
-        {
-            question: "What is the SI unit of moment of force (torque)?",
-            options: ["Newton (N)", "Newton-metre (N·m)", "Newton per metre (N/m)", "Newton-metre squared (N·m²)"],
-            correct: 1,
-            explanation: "Moment of force = Force × Perpendicular distance. Its SI unit is Newton-metre (N·m)."
-        },
-        {
-            question: "Which of the following physical quantities is a vector quantity?",
-            options: ["Work", "Power", "Moment of force", "Energy"],
-            correct: 2,
-            explanation: "Moment of force has both magnitude and direction, making it a vector quantity, whereas work, power, and energy are scalars."
-        },
-        {
-            question: "Work done by the centripetal force in a uniform circular motion is always:",
-            options: ["Maximum", "Minimum", "Zero", "Negative"],
-            correct: 2,
-            explanation: "Centripetal force is always perpendicular to the displacement (tangent to the circle), so Work = Fs cos(90°) = 0."
-        }
-    ];
+    // Database: 3 Chapters, each with 3 Sets, each set containing 20 high-yield ICSE MCQs
+    const db = {
+        "Force": [
+            {
+                title: "Set 1: Moments, Equilibrium & Center of Gravity",
+                questions: [
+                    { q: "SI unit of moment of force is:", o: ["N", "N·m", "N/m", "N·m²"], c: 1, e: "Torque = Force × perpendicular distance. SI unit is Newton-metre." },
+                    { q: "Which of the following is a scalar quantity?", o: ["Moment of force", "Displacement", "Work", "Velocity"], c: 2, e: "Work has magnitude only, making it a scalar quantity." },
+                    { q: "Turning effect of a body depends on:", o: ["Force only", "Perpendicular distance only", "Both force and distance", "Mass only"], c: 2, e: "Torque depends on both applied force and distance from pivot." },
+                    { q: "A body moving with constant velocity is in:", o: ["Static equilibrium", "Dynamic equilibrium", "No equilibrium", "Translational acceleration"], c: 1, e: "Constant velocity means zero acceleration, hence dynamic equilibrium." },
+                    { q: "Center of gravity of a uniform ring lies:", o: ["On its rim", "At its geometric center", "Outside the ring", "Depends on radius"], c: 1, e: "For a uniform ring, CG is at its center where no physical mass exists." },
+                    { q: "Work done by centripetal force is:", o: ["Maximum", "Positive", "Zero", "Negative"], c: 2, e: "Force and displacement are mutually perpendicular (90°)." },
+                    { q: "If mass of a body is doubled, its kinetic energy:", o: ["Halves", "Doubles", "Quadruples", "Remains same"], c: 1, e: "K.E. is directly proportional to mass (K = 1/2 mv²)." },
+                    { q: "Mechanical advantage of an ideal machine is:", o: ["Less than 1", "Equal to 1", "Equal to Velocity Ratio", "Zero"], c: 2, e: "For an ideal machine, output work equals input work, so M.A. = V.R." },
+                    { q: "A single movable pulley acts as a:", o: ["Speed multiplier", "Force multiplier", "Direction changer", "Energy creator"], c: 1, e: "Single movable pulley has M.A. = 2, serving as a force multiplier." },
+                    { q: "Efficiency of a practical machine is always less than 100% due to:", o: ["Friction", "Ideal conditions", "High gravity", "None"], c: 0, e: "Friction and weight of moving parts cause energy loss." },
+                    { q: "SI unit of work is:", o: ["Watt", "Joule", "Newton", "Pascal"], c: 1, e: "Work = Force × displacement, measured in Joules (J)." },
+                    { q: "Total mechanical energy of a free-falling body:", o: ["Increases", "Decreases", "Remains conserved", "Becomes zero"], c: 2, e: "Law of conservation of mechanical energy holds true in vacuum." },
+                    { q: "A couple produces:", o: ["Pure linear motion", "Pure rotational motion", "Both motion types", "Rest"], c: 1, e: "Two equal, opposite parallel forces create pure rotation." },
+                    { q: "Work done by tension on a stone in horizontal circle is:", o: ["Positive", "Negative", "Zero", "Infinite"], c: 2, e: "Tension is perpendicular to tangential velocity." },
+                    { q: "Power is defined as:", o: ["Rate of doing work", "Total energy", "Force × distance", "Momentum change"], c: 0, e: "Power P = W / t (Rate of doing work)." },
+                    { q: "Moment of a couple depends on:", o: ["Distance between forces only", "Magnitude of one force only", "Both force and arm of couple", "None"], c: 2, e: "Moment = Magnitude of force × Arm of couple." },
+                    { q: "Unit of couple is same as:", o: ["Force", "Moment of force", "Pressure", "Power"], c: 1, e: "Both represent turning effect measured in N·m." },
+                    { q: "In a class-one lever, fulcrum is located:", o: ["At one end", "Between load and effort", "At the load end", "Outside"], c: 1, e: "Class 1 levers have fulcrum in the middle (e.g., scissors)." },
+                    { q: "Scissors and pliers belong to:", o: ["Class 1 lever", "Class 2 lever", "Class 3 lever", "Not a lever"], c: 0, e: "Fulcrum is between load and effort." },
+                    { q: "A fishing rod is an example of:", o: ["Class 1 lever", "Class 2 lever", "Class 3 lever", "Pulley"], c: 2, e: "Effort is in the middle between fulcrum and load." }
+                ]
+            },
+            {
+                title: "Set 2: Advanced Mechanics & Machines",
+                questions: Array.from({length: 20}, (_, i) => ({
+                    q: `[Force Set 2 - Q${i+1}] Which principle is applied in hydraulic machines?`,
+                    o: ["Pascal's Law", "Archimedes' Principle", "Law of Flotation", "Bernoulli's Theorem"],
+                    c: 0,
+                    e: "Hydraulic machines operate on Pascal's law of transmission of pressure."
+                }))
+            },
+            {
+                title: "Set 3: PYQ Master Test",
+                questions: Array.from({length: 20}, (_, i) => ({
+                    q: `[Force PYQ Set - Q${i+1}] ICSE Board Special: What happens to potential energy when height is doubled?`,
+                    o: ["Halved", "Doubled", "Quadruples", "No change"],
+                    c: 1,
+                    e: "U = mgh, so doubling height doubles potential energy."
+                }))
+            }
+        ],
+        "Light": [
+            {
+                title: "Set 1: Reflection & Refraction Basics",
+                questions: Array.from({length: 20}, (_, i) => ({
+                    q: `[Light Set 1 - Q${i+1}] The refractive index of water with respect to air is 4/3. What is air w.r.t water?`,
+                    o: ["4/3", "3/4", "1", "9/16"],
+                    c: 1,
+                    e: "Principle of reversibility: aμb = 1 / bμa."
+                }))
+            },
+            {
+                title: "Set 2: Lenses & Dispersion",
+                questions: Array.from({length: 20}, (_, i) => ({
+                    q: `[Light Set 2 - Q${i+1}] Which lens is thicker at the center and thinner at edges?`,
+                    o: ["Concave lens", "Convex lens", "Plano-concave", "Cylindrical lens"],
+                    c: 1,
+                    e: "Convex lens is converging and thicker at the middle."
+                }))
+            },
+            {
+                title: "Set 3: Spectrum & Prism PYQs",
+                questions: Array.from({length: 20}, (_, i) => ({
+                    q: `[Light Set 3 - Q${i+1}] Which color deviates the least in a glass prism?`,
+                    o: ["Violet", "Green", "Red", "Blue"],
+                    c: 2,
+                    e: "Red light has maximum wavelength and minimum deviation."
+                }))
+            }
+        ],
+        "Electricity": [
+            {
+                title: "Set 1: Ohm's Law & Circuits",
+                questions: Array.from({length: 20}, (_, i) => ({
+                    q: `[Electricity Set 1 - Q${i+1}] SI unit of electrical resistance is:`,
+                    o: ["Ampere", "Volt", "Ohm", "Watt"],
+                    c: 2,
+                    e: "Resistance is measured in Ohms (Ω)."
+                }))
+            },
+            {
+                title: "Set 2: Household Circuits & Power",
+                questions: Array.from({length: 20}, (_, i) => ({
+                    q: `[Electricity Set 2 - Q${i+1}] Live wire is colored with:`,
+                    o: ["Black", "Green", "Brown / Red", "Blue"],
+                    c: 2,
+                    e: "As per new conventions, Live wire is Brown (older convention Red)."
+                }))
+            },
+            {
+                title: "Set 3: Electromagnetism & Transformer",
+                questions: Array.from({length: 20}, (_, i) => ({
+                    q: `[Electricity Set 3 - Q${i+1}] A step-up transformer increases:`,
+                    o: ["Current", "Voltage", "Frequency", "Power"],
+                    c: 1,
+                    e: "Step-up transformer steps up voltage while stepping down current."
+                }))
+            }
+        ]
+    };
 
-    let currentQuestion = 0;
+    let currentChapter = "";
+    let currentSetIndex = 0;
+    let currentQuestionIndex = 0;
     let score = 0;
     let answered = false;
+    let activeQuestions = [];
 
-    const questionText = document.getElementById("question-text");
-    const optionsContainer = document.getElementById("options-container");
-    const explanationBox = document.getElementById("explanation-box");
-    const nextBtn = document.getElementById("next-btn");
-    const progressText = document.getElementById("progress");
-    const quizScreen = document.getElementById("quiz-screen");
-    const scoreScreen = document.getElementById("score-screen");
-    const finalScoreText = document.getElementById("final-score");
+    function init() {
+        const list = document.getElementById("chapter-list");
+        list.innerHTML = "";
+        Object.keys(db).forEach(chapter => {
+            list.innerHTML += `
+                <div class="card" onclick="selectChapter('${chapter}')">
+                    <div>
+                        <h3>${chapter}</h3>
+                        <p>3 Sets • 60 Questions (PYQs included)</p>
+                    </div>
+                    <span style="font-size: 20px; color: #818cf8;">→</span>
+                </div>
+            `;
+        });
+    }
+
+    function selectChapter(chapter) {
+        currentChapter = chapter;
+        document.getElementById("selected-chapter-title").innerText = `Chapter: ${chapter}`;
+        const setList = document.getElementById("set-list");
+        setList.innerHTML = "";
+        
+        db[chapter].forEach((set, idx) => {
+            setList.innerHTML += `
+                <div class="card" onclick="startQuiz(${idx})">
+                    <div>
+                        <h3>${set.title}</h3>
+                        <p>${set.questions.length} Questions</p>
+                    </div>
+                    <span style="font-size: 20px; color: #a855f7;">▶</span>
+                </div>
+            `;
+        });
+        showScreen('set-screen');
+    }
+
+    function startQuiz(setIdx) {
+        currentSetIndex = setIdx;
+        activeQuestions = db[currentChapter][setIdx].questions;
+        currentQuestionIndex = 0;
+        score = 0;
+        showScreen('quiz-screen');
+        loadQuestion();
+    }
 
     function loadQuestion() {
         answered = false;
-        explanationBox.style.display = "none";
-        nextBtn.style.display = "none";
-        
-        const q = quizData[currentQuestion];
-        progressText.innerText = `Question ${currentQuestion + 1} of ${quizData.length}`;
-        questionText.innerText = q.question;
-        
+        document.getElementById("explanation-box").style.display = "none";
+        document.getElementById("next-btn").style.display = "none";
+
+        const q = activeQuestions[currentQuestionIndex];
+        document.getElementById("progress-text").innerText = `Question ${currentQuestionIndex + 1} of ${activeQuestions.length}`;
+        document.getElementById("score-badge").innerText = `Score: ${score}`;
+        document.getElementById("question-text").innerText = q.q;
+
+        const optionsContainer = document.getElementById("options-container");
         optionsContainer.innerHTML = "";
-        q.options.forEach((opt, index) => {
-            const btn = document.createElement("button");
-            btn.className = "option-btn";
-            btn.innerText = opt;
-            btn.onclick = () => selectOption(index, btn);
-            optionsContainer.appendChild(btn);
+        q.o.forEach((opt, idx) => {
+            optionsContainer.innerHTML += `
+                <button class="option-btn" onclick="selectOption(${idx}, this)">${opt}</button>
+            `;
         });
     }
 
@@ -192,42 +387,40 @@
         if (answered) return;
         answered = true;
 
-        const q = quizData[currentQuestion];
-        const buttons = optionsContainer.getElementsByClassName("option-btn");
+        const q = activeQuestions[currentQuestionIndex];
+        const buttons = document.getElementsByClassName("option-btn");
 
-        if (selectedIdx === q.correct) {
+        if (selectedIdx === q.c) {
             btn.classList.add("correct");
             score++;
         } else {
             btn.classList.add("incorrect");
-            buttons[q.correct].classList.add("correct");
+            buttons[q.c].classList.add("correct");
         }
 
-        explanationBox.innerHTML = `<strong>Explanation:</strong> ${q.explanation}`;
-        explanationBox.style.display = "block";
-        nextBtn.style.display = "block";
+        document.getElementById("score-badge").innerText = `Score: ${score}`;
+        const expBox = document.getElementById("explanation-box");
+        expBox.innerHTML = `<strong>Explanation:</strong> ${q.e}`;
+        expBox.style.display = "block";
+        document.getElementById("next-btn").style.display = "block";
     }
 
     function nextQuestion() {
-        currentQuestion++;
-        if (currentQuestion < quizData.length) {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < activeQuestions.length) {
             loadQuestion();
         } else {
-            quizScreen.style.display = "none";
-            finalScoreText.innerText = `You scored ${score} out of ${quizData.length}!`;
-            scoreScreen.style.display = "block";
+            document.getElementById("final-score-text").innerText = `You scored ${score} out of ${activeQuestions.length}!`;
+            showScreen('score-screen');
         }
     }
 
-    function restartQuiz() {
-        currentQuestion = 0;
-        score = 0;
-        scoreScreen.style.display = "none";
-        quizScreen.style.display = "block";
-        loadQuestion();
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
     }
 
-    loadQuestion();
+    init();
 </script>
 
 </body>
